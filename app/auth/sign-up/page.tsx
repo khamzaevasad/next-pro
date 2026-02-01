@@ -18,6 +18,10 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+function onSubmit() {
+  console.log("yoo");
+}
+
 export default function SignupPage() {
   const form = useForm({
     resolver: zodResolver(signUpSchema),
@@ -34,15 +38,19 @@ export default function SignupPage() {
         <CardDescription>Create an account to get started</CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
-          <FieldGroup>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup className="gap-y-4">
             <Controller
               name="name"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel>Full Name</FieldLabel>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input
+                    aria-invalid={fieldState.invalid}
+                    placeholder="John Doe"
+                    {...field}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -56,7 +64,12 @@ export default function SignupPage() {
               render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel>Email</FieldLabel>
-                  <Input placeholder="John@doe.com" type="email" {...field} />
+                  <Input
+                    aria-invalid={fieldState.invalid}
+                    placeholder="John@doe.com"
+                    type="email"
+                    {...field}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -67,7 +80,12 @@ export default function SignupPage() {
                     render={({ field, fieldState }) => (
                       <Field>
                         <FieldLabel>Password</FieldLabel>
-                        <Input placeholder="*****" type="password" {...field} />
+                        <Input
+                          aria-invalid={fieldState.invalid}
+                          placeholder="*****"
+                          type="password"
+                          {...field}
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
