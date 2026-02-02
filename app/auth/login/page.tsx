@@ -1,5 +1,5 @@
 "use client";
-import { signUpSchema } from "@/app/schemas/auth";
+import { loginSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,28 +24,25 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-export default function SignupPage() {
+export default function Loginpage() {
   const [isPending, startTransition] = useTransition();
-
   const router = useRouter();
   const form = useForm({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof signUpSchema>) {
+  function onSubmit(data: z.infer<typeof loginSchema>) {
     startTransition(async () => {
-      await authClient.signUp.email({
+      await authClient.signIn.email({
         email: data.email,
-        name: data.name,
         password: data.password,
         fetchOptions: {
           onSuccess: () => {
-            toast.success("SignUp successfully");
+            toast.success("login successfully");
             router.push("/");
           },
           onError: (error) => {
@@ -58,30 +55,12 @@ export default function SignupPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sign up</CardTitle>
-        <CardDescription>Create an account to get started</CardDescription>
+        <CardTitle>Login</CardTitle>
+        <CardDescription>Login to get started right away </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup className="gap-y-4">
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field>
-                  <FieldLabel>Full Name</FieldLabel>
-                  <Input
-                    aria-invalid={fieldState.invalid}
-                    placeholder="John Doe"
-                    {...field}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
             <Controller
               name="email"
               control={form.control}
@@ -97,37 +76,38 @@ export default function SignupPage() {
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
-                </Field>
-              )}
-            />
-            <Controller
-              name="password"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field>
-                  <FieldLabel>Password</FieldLabel>
-                  <Input
-                    aria-invalid={fieldState.invalid}
-                    placeholder="*****"
-                    type="password"
-                    {...field}
+
+                  <Controller
+                    name="password"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <FieldLabel>Password</FieldLabel>
+                        <Input
+                          aria-invalid={fieldState.invalid}
+                          placeholder="*****"
+                          type="password"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  <Button disabled={isPending}>
+                    {isPending ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" />
+                        <span>Loading... </span>
+                      </>
+                    ) : (
+                      <span>Login</span>
+                    )}
+                  </Button>
                 </Field>
               )}
             />
-            <Button disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  <span>Loading... </span>
-                </>
-              ) : (
-                <span>Sing up</span>
-              )}
-            </Button>
           </FieldGroup>
         </form>
       </CardContent>
