@@ -15,12 +15,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-
-function onSubmit() {
-  console.log("yoo");
-}
+import z from "zod";
 
 export default function SignupPage() {
   const form = useForm({
@@ -31,6 +29,14 @@ export default function SignupPage() {
       password: "",
     },
   });
+
+  async function onSubmit(data: z.infer<typeof signUpSchema>) {
+    await authClient.signUp.email({
+      email: data.email,
+      name: data.name,
+      password: data.password,
+    });
+  }
   return (
     <Card>
       <CardHeader>
