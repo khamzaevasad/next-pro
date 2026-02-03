@@ -1,4 +1,5 @@
 "use client";
+import { createBlogAction } from "@/app/action";
 import { postSchema } from "@/app/schemas/blog";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +26,7 @@ import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-
+// 3:28
 export default function CreateRoute() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -40,12 +41,8 @@ export default function CreateRoute() {
 
   function onSubmit(values: z.infer<typeof postSchema>) {
     startTransition(async () => {
-      mutation({
-        body: values.content,
-        title: values.title,
-      });
-      toast.success("Everything was fine!");
-      router.push("/");
+      console.log("hey this runs on the client side");
+      await createBlogAction(values);
     });
   }
   return (
